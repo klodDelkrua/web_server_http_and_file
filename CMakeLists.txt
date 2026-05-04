@@ -12,4 +12,6 @@ add_executable(serveur_web ${SOURCES}
         src/server.cpp
         include/request.h
         src/request.cpp
-        include/response.h)
+        include/response.h
+        include/static_file_handler.h
+        src/static_file_handler.cpp)

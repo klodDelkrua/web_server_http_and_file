@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <net/if.h>
+#include <memory>
 
 #define MAX_EVENTS 1024
 #define BUFFER_SIZE 32768
@@ -70,10 +71,6 @@ std::string Server::get_local_ip() {
     return possible_ips[0];
 }
 
-void Server::enable_cors() {
-    // On va modifier send_response pour ajouter les headers CORS
-    // Pour l'instant, on va créer une méthode utilitaire
-}
 
 Server::Server(int port) : port(port), server_fd(-1), epoll_fd(-1) {}
 
@@ -173,7 +170,9 @@ void Server::handle_client(const int client_fd) {
 
     if (const RouteHandler* handler = find_handler(req.method, req.path)) {
         resp = (*handler)(req);
-    } else {
+    } else if (static_handler && static_handler->is_static_file(req.path)) {
+        resp = static_handler->serve_file(req.path);
+    }else {
         resp.status = 404;
         resp.body = R"({"error":"Route not found"})";
         resp.headers["Content-Type"] = "application/json";
@@ -189,10 +188,13 @@ void Server::send_response(const int client_fd, const Response& resp) {
     std::string response = "HTTP/1.1 " + std::to_string(resp.status) + " " +
                            get_status_text(resp.status) + "\r\n";
 
-    // Headers CORS (permettent à ton frontend React/mobile d'appeler l'API)
-    response += "Access-Control-Allow-Origin: *\r\n";
-    response += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS\r\n";
-    response += "Access-Control-Allow-Headers: Content-Type, Authorization\r\n";
+    // Headers CORS (si activés)
+    if (cors_enabled) {
+        response += "Access-Control-Allow-Origin: *\r\n";
+        response += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS\r\n";
+        response += "Access-Control-Allow-Headers: Content-Type, Authorization\r\n";
+        response += "Access-Control-Max-Age: 86400\r\n";
+    }
 
     for (const auto& [key, value] : resp.headers) {
         response.append(key);
@@ -254,4 +256,29 @@ RouteHandler* Server::find_handler(const std::string& method, const std::string&
         if (it != delete_routes.end()) return &it->second;
     }
     return nullptr;
+}
+
+// server.cpp - Version corrigée de set_static_folder
+
+void Server::set_static_folder(const std::string& folder) {
+    // Nettoyer le dossier : enlever les slashes au début et à la fin
+    std::string clean_folder = folder;
+
+    // Enlever les slashes au début
+    while (!clean_folder.empty() && clean_folder[0] == '/') {
+        clean_folder.erase(0, 1);
+    }
+
+    // Enlever les slashes à la fin
+    while (!clean_folder.empty() && clean_folder.back() == '/') {
+        clean_folder.pop_back();
+    }
+
+    static_handler = std::make_unique<StaticFileHandler>(clean_folder);
+    std::cout << "✅ Dossier statique configuré: " << clean_folder << std::endl;
+}
+
+void Server::set_cors_enabled(const bool enabled) {
+    cors_enabled = enabled;
+    std::cout << "🔒 CORS " << (enabled ? "activé" : "désactivé") << std::endl;
 }

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace Immobilier</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h1>🏠 Marketplace Immobilier</h1>
+  <div class="status">
+    <h2>✅ Serveur C++ Opérationnel</h2>
+    <p>Ton serveur sert maintenant des fichiers statiques !</p>
+  </div>
+
+  <div class="api-section">
+    <h3>📡 API disponible :</h3>
+    <div class="api-buttons">
+      <button onclick="testAPI('/api/health')">🔍 Test /api/health</button>
+      <button onclick="testAPI('/api/listings')">📋 Voir annonces</button>
+    </div>
+    <pre id="api-result">Clique sur un bouton pour tester l'API...</pre>
+  </div>
+</div>
+
+<script src="/script.js"></script>
+</body>
+</html>
