@@ -7,4 +7,9 @@ include_directories(include)
 
 file(GLOB SOURCES "src/*.cpp")
 
-add_executable(serveur_web ${SOURCES})
+add_executable(serveur_web ${SOURCES}
+        include/server.h
+        src/server.cpp
+        include/request.h
+        src/request.cpp
+        include/response.h)
