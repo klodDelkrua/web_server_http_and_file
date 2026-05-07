@@ -1,6 +1,3 @@
-Voici un README court, clair et professionnel pour ton projet, sans la partie base de données :
-
-```markdown
 # 🏠 Serveur Web C++ 
 
 [![C++](https://img.shields.io/badge/C++-17-blue.svg)](https://isocpp.org/)
@@ -41,8 +38,8 @@ brew install cmake
 
 ### 1. Cloner le repository
 ```bash
-git clone https://github.com/tonpseudo/serveur-immobilier.git
-cd serveur-immobilier
+git clone https://github.com/klodDelkrua/web_server_http_and_file.git
+cd web_server_http_and_file
 ```
 
 ### 2. Télécharger nlohmann/json
@@ -256,6 +253,6 @@ Si ce projet t'aide, mets une ⭐️ sur GitHub !
 ---
 
 **Fait avec ❤️ en C++**
-```
+
 
 Tu peux le personnaliser avec ton nom et ton pseudo GitHub ! 🚀
