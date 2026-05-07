@@ -18,6 +18,8 @@ private:
     bool file_exists(const std::string& filepath);
     //Nettoie le chemin pour eviter les attaqques (path traversal)
     std::string sanitize_path(const std::string& path);
+    //Le cache pour les images
+    std::string get_cache_control(const std::string& path);
 
 public:
     explicit StaticFileHandler(const std::string&  root_directory);

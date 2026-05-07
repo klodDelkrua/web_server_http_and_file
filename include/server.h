@@ -7,7 +7,6 @@
 #include <functional>
 #include <memory>
 #include <unordered_map>
-#include <vector>
 #include "static_file_handler.h"
 
 struct Request;

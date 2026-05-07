@@ -11,6 +11,8 @@
 #include <iostream>
 #include <net/if.h>
 #include <memory>
+#include <vector>
+#include <string>
 
 #define MAX_EVENTS 1024
 #define BUFFER_SIZE 32768
@@ -25,7 +27,7 @@ std::string Server::get_local_ip() {
         return "127.0.0.1";  // Fallback
     }
 
-    for (struct ifaddrs* interface = interfaces;
+    for (const struct ifaddrs* interface = interfaces;
          interface != nullptr;
          interface = interface->ifa_next) {
 

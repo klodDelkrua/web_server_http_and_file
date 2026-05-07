@@ -69,6 +69,23 @@ std::string StaticFileHandler::sanitize_path(const std::string& path) {
     return clean;
 }
 
+std::string StaticFileHandler::get_cache_control(const std::string &path) {
+    //Images et assets statiques : cache 1 jour
+    if (path.find(".jpg") != std::string::npos ||
+        path.find(".png") != std::string::npos ||
+        path.find(".svg") != std::string::npos ||
+        path.find(".css") != std::string::npos ||
+        path.find(".js") != std::string::npos) {
+        return "public, max-age=86400"; // Cache 24h
+    }
+
+    if (path.find(".html") != std::string::npos) {
+        return "no-cache, must-revalidate";
+    }
+
+    return "no-cache";
+}
+
 bool StaticFileHandler::file_exists(const std::string &filepath) {
     return fs::exists(filepath) && fs::is_regular_file(filepath);
 }
@@ -175,7 +192,7 @@ Response StaticFileHandler::serve_file(const std::string& path) {
     resp.status = 200;
     resp.body = content;
     resp.headers["Content-Type"] = get_mime_type(full_path);
-    resp.headers["Cache-Control"] = "no-cache";  // Pour le développement
+    resp.headers["Cache-Control"] = get_cache_control(full_path);
 
     std::cout << "✅ Servi: " << clean_path << " (" << content.size() << " bytes)" << std::endl;
 
